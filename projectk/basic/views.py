@@ -46,6 +46,34 @@ def addStudent(request):
         # data.get('age')
         # data.get('email')
         return JsonResponse({"status":"success","id":student.id},status=200)
+    elif (request.method)=='GET':
+        result=list(Student.objects.values())
+        # result=tuple(Student.objects.values())
+
+        print(result)
+        return JsonResponse({"status":"ok","data":result},status=200)
+    elif (request.method)=='PUT':
+        data=json.loads(request.body)
+        ref_id=data.get("id")#getting id
+        new_email=data.get("email")#getting email
+        existing_student=Student.objects.get(id=ref_id) #fetched the object se per the id
+        # print(existing_student)
+        existing_student.email=new_email #updating with new email
+        existing_student.save()
+        # updated_data=Student.objects.filter(id=ref_id).values().first()
+        updated_data = list(Student.objects.filter(id=ref_id).values())
+
+        return JsonResponse({"status":"data updated successfully","updated_data":updated_data},status=200)
+    
+    elif (request.method)=='DELETE':
+        data=json.loads(request.body)
+        ref_id=data.get("id")#getting id
+        get_deleting_data = list(Student.objects.filter(id=ref_id).values())
+
+        to_be_delete=Student.objects.get(id=ref_id)
+        to_be_delete.delete()
+
+        return JsonResponse({"req":"success","message":"student record delete successfully","deleted data":get_deleting_data},status=200)
 
     return JsonResponse({"error":"use post method"},status=400)
 
