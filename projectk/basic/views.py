@@ -46,17 +46,55 @@ def addStudent(request):
         # data.get('age')
         # data.get('email')
         return JsonResponse({"status":"success","id":student.id},status=200)
+    
     elif (request.method)=='GET':
-        result=list(Student.objects.values())
-        # result=tuple(Student.objects.values())
+        # result=list(Student.objects.values())
+        # # result=tuple(Student.objects.values())
+        # # # print(result)
+        # return JsonResponse({"status":"ok","data":result},status=200)
+    
+        # # get all records
+        # 
+        # results=list(Student.objects.all().values())
+        # return JsonResponse({"status":"ok","data":results},status=200)
+        
+        # # get a specific record by id
+        # data=json.loads(request.body)
+        # ref_id=data.get("id")
+        # results=list(Student.objects.filter(id=ref_id).values())
+        # return JsonResponse({"status":"ok","data":results},status=200)
 
-        print(result)
-        return JsonResponse({"status":"ok","data":result},status=200)
+        # filter by age >=20
+        # data=json.loads(request.body)
+        # ref_age=data.get("age")
+        # results=list(Student.objects.filter(age__gte=ref_age).values())
+        # return JsonResponse({"status":"ok","data":results},status=200)
+
+        # # filter by age<=25
+        # data=json.loads(request.body)
+        # ref_age=data.get("age")
+        # results=list(Student.objects.filter(age__lte=ref_age).values())
+        # return JsonResponse({"status":"ok","data":results},status=200)
+
+        # order by name
+        # results=list(Student.objects.order_by('name').values())
+        # return JsonResponse({"status":"ok","data":results},status=200)
+    
+
+        # get unique ages
+        # results=list(Student.objects.values('age').distinct())
+        # return JsonResponse({"status":"ok","data":results},status=200)
+
+        # count total students
+        results=Student.objects.count()
+        return JsonResponse({"status":"ok","data":results},status=200)
+
+    
     elif (request.method)=='PUT':
         data=json.loads(request.body)
         ref_id=data.get("id")#getting id
         new_email=data.get("email")#getting email
-        existing_student=Student.objects.get(id=ref_id) #fetched the object se per the id
+        existing_student=Student.objects.get(id=ref_id) #fetched the object as per the id
         # print(existing_student)
         existing_student.email=new_email #updating with new email
         existing_student.save()
@@ -90,3 +128,5 @@ def add_post(request):
         )
         return JsonResponse({"status":"success","message":"Post added successfully","post_id":post.id},status=201)
     return JsonResponse({"status":"error","message":"Ony POST method allowed"},status=405)
+
+
