@@ -48,10 +48,12 @@ def addStudent(request):
         return JsonResponse({"status":"success","id":student.id},status=200)
     
     elif (request.method)=='GET':
-        # result=list(Student.objects.values())
-        # # result=tuple(Student.objects.values())
-        # # # print(result)
-        # return JsonResponse({"status":"ok","data":result},status=200)
+        result=list(Student.objects.values())
+        # result=tuple(Student.objects.values())
+        for i in result:
+            print(i)
+        # print(result)
+        return JsonResponse({"status":"ok","data":result},status=200)
     
         # # get all records
         # 
@@ -86,8 +88,8 @@ def addStudent(request):
         # return JsonResponse({"status":"ok","data":results},status=200)
 
         # count total students
-        results=Student.objects.count()
-        return JsonResponse({"status":"ok","data":results},status=200)
+        # results=Student.objects.count()
+        # return JsonResponse({"status":"ok","data":results},status=200)
 
     
     elif (request.method)=='PUT':
@@ -127,6 +129,11 @@ def add_post(request):
             post_description=data.get('post_description')
         )
         return JsonResponse({"status":"success","message":"Post added successfully","post_id":post.id},status=201)
+    elif(request.method)=="GET":
+        results=list(Post.objects.all().values())
+        print(results)
+        return JsonResponse({"status":"ok","data":results},status=200)
+        
     return JsonResponse({"status":"error","message":"Ony POST method allowed"},status=405)
 
 
