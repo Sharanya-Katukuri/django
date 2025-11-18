@@ -1,24 +1,78 @@
+from django.http import JsonResponse
+
 class basicMiddleware:
-    def __init__(self,get_response):  #to get the reponse form view as per request  #start in server
+    def __init__(self, get_response):  #automatically give the response #start the server then it is run
+
         self.get_response=get_response
 
     def __call__(self,request): #start when pass request
-        # print(request,"hello")
+        print(request,"hello")
         if(request.path=="/add/"):
             print(request.method,"method")
             print(request.path)
-            response=self.get_response(request)
         elif(request.path=="/greet/"):
             print(request.method,"method")
             print(request.path)
-            response=self.get_response(request)
         elif(request.path=="/info/"):
             print(request.method,"method")
             print(request.path)
-            response=self.get_response(request)
         elif(request.path=="/post/"):
             print(request.method,"method")
             print(request.path)
-            response=self.get_response(request)
+        response= self.get_response(request)
         return response
+
+# class basicMiddleware: #class in camel case
+#     def _init_(self,get_response):
+#         self.get_response=get_response
+#     def _call_   (self,request):
+#         data=json.loads(request.body)
+#         username=data.get("username") 
+#         email=data.get("email")
+#         dob=data.get("dob")
+#         password=data.get("pswd")
+        # check the username rules with regex
+        # check the email rules with regex
+        # check dob rules with regex
+        # check the password with regex
+
+
+class sscMiddleware:
+    def __init__(self,get_response):  
+        self.get_response=get_response
+    def __call__(self,request):
+        if(request.path in ["/job1/","/job2/"]):
+            ssc_result=request.GET.get("ssc")
+            if(ssc_result!='True'):
+                return JsonResponse({
+                   "error":"u should qualify atleast ssc for applying this job"
+               },status=400)
+        return self.get_response(request)
+
+
+class MedicalFitMiddleware:
+    def __init__(self,get_response):  
+        self.get_response=get_response
+    def __call__(self,request):
+        if(request.path=="/job1/"):
+            medical_fit_result=request.GET.get("medically_fit")
+            if(medical_fit_result !='True'):
+                 return JsonResponse({
+                   "error":"medically unfit for this job"
+               },status=400)
+        return self.get_response(request)
+        
+        
+
+class AgeMiddleware:
+    def __init__(self,get_response):  
+        self.get_response=get_response
+    def __call__(self,request):
+        if(request.path in ["/job1/","/job2/"]):
+            age_checker=int(request.GET.get("age",17))
+            if not (18 <= age_checker <= 25):
+                return JsonResponse({"error":"age must be in between 18 and 25"},status=400)
+        return self.get_response(request)
+        
+                
         

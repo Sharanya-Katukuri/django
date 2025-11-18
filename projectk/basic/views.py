@@ -137,3 +137,10 @@ def add_post(request):
     return JsonResponse({"status":"error","message":"Ony POST method allowed"},status=405)
 
 
+
+def job1(request):
+    return JsonResponse({"message":"u have successfully applied for job1"},status=200)
+def job2(request):
+    return JsonResponse({"message":"u have successfully applied for job2"},status=200)
+
+
