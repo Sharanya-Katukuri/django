@@ -5,7 +5,7 @@ from django.db import connection
 import json
 from django.views.decorators.csrf import csrf_exempt
 from basic.models import Student 
-from basic.models import Post
+from basic.models import Post,Users
 # Create your views here.
 
 def sample(request):
@@ -143,4 +143,16 @@ def job1(request):
 def job2(request):
     return JsonResponse({"message":"u have successfully applied for job2"},status=200)
 
+
+@csrf_exempt
+def signUp(request):
+    if(request.method)=="POST":
+        data=json.loads(request.body)
+        print(data)
+        user=Users.objects.create(
+            username=data.get("username"),
+            email=data.get("email"),
+            password=data.get("password")
+        )
+    return JsonResponse({"status":"success"},status=200)
 
