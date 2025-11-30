@@ -96,7 +96,7 @@ class UsernameMiddleware:
     def __init__(self,get_response):  
         self.get_response=get_response
     def __call__(self,request):
-        if(request.path=="/signup/"):
+        if(request.path=="/signup/") and request.method=="POST":
             data=json.loads(request.body)
 
             username=data.get("username","")
@@ -127,14 +127,16 @@ class EmailMiddleware:
     def __init__(self,get_response):  
         self.get_response=get_response
     def __call__(self,request):
-        if(request.path=="/signup/"):
+        if(request.path=="/signup/") and request.method=="POST":
             data=json.loads(request.body)
             Email=data.get("email","")
+            # check email should not empty
             if not Email:
                 return JsonResponse({"error":"email should not empty"},status=400)
+            # check email pattern
             if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', Email):
-                return JsonResponse({"error":"Invalid email format. Email must contain '@' and a valid domain"
-},status=400)
+                return JsonResponse({"error":"Invalid email format. Email must contain '@' and a valid domain"},status=400)
+            # check if duplicate email found --->show  email already exists
             if Users.objects.filter(email=Email).exists():
                 return JsonResponse({"error": "email already exists"}, status=400)
 
@@ -147,13 +149,15 @@ class PasswordMiddleware:
     def __init__(self,get_response):  
         self.get_response=get_response
     def __call__(self,request):
-        if(request.path=="/signup/"):
+        if(request.path=="/signup/") and request.method=="POST":
             data=json.loads(request.body)
             password=data.get("password","")
+            # check not empty password
             if not password:
                 return JsonResponse({"error":"password should not empty"},status=400)
             if len(password)<8 or len(password)>12:
                 return JsonResponse({"error":"password should contains 8 to 12 characters"},status=400)
+            # strong password pattern
             if not re.match(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$', password):
                    return JsonResponse({"error": "Password must include uppercase, lowercase, digit, special character"},status=400)
         return self.get_response(request)

@@ -6,6 +6,9 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from basic.models import Student 
 from basic.models import Post,Users
+from django.contrib.auth.hashers import make_password,check_password
+import jwt
+from django.conf import settings
 # Create your views here.
 
 def sample(request):
@@ -135,7 +138,7 @@ def add_post(request):
         return JsonResponse({"status":"ok","data":results},status=200)
         
     return JsonResponse({"status":"error","message":"Ony POST method allowed"},status=405)
-
+ 
 
 
 def job1(request):
@@ -152,7 +155,62 @@ def signUp(request):
         user=Users.objects.create(
             username=data.get("username"),
             email=data.get("email"),
-            password=data.get("password")
+            password=make_password(data.get("password"))
         )
-    return JsonResponse({"status":"success"},status=200)
+        return JsonResponse({"status":"success"},status=200)
+    elif request.method=="PUT":
+        data=json.loads(request.body)
+        ref_username=data.get("username")
+        print(ref_username)
+        new_password=data.get("password")
+        print(new_password)
+        try:
+            existing_user=Users.objects.get(username=ref_username)
+        except Users.DoesNotExist:
+                return JsonResponse({"status": "user not found"}, status=404)
 
+        existing_user.password=make_password(new_password)
+        existing_user.save()
+        return JsonResponse({"status":"password changed successfully","username":existing_user.username},status=200)
+
+@csrf_exempt
+def login(request):
+    if request.method=="POST":
+        data=request.POST
+        print(data)
+        username=data.get('username')
+        password=data.get('password')
+        try:
+            user=Users.objects.get(username=username)
+            if check_password(password,user.password):
+                # token="a json web token"
+                payload={"username":username,"email":user.email,"id":user.id}
+                token=jwt.encode(payload,settings.SECRET_KEY,algorithm="HS256")
+                return JsonResponse ({"status":'successfully loggedin',"token":token},status=200)
+            else:
+                return JsonResponse({"status":"failure","message":"invalid password"},status=400)
+        except Users.DoesNotExist:
+            return JsonResponse({"status":"failure","message":"user not found"},status=400)
+    
+
+@csrf_exempt
+def change_password(request):
+    if request.method=="PUT":
+        data=json.loads(request.body)
+        ref_id=data.get("id")
+        new_password=data.get("password")
+        existing_user=Users.objects.get(id=ref_id)
+        existing_user.password=make_password(new_password)
+        existing_user.save()
+        return JsonResponse({"status":"change the password successfully","username":existing_user.username},status=200)
+
+@csrf_exempt
+def check(request):
+    hased_data="pbkdf2_sha256$870000$5roUXT141gfhgJ5OpoesMN$+cGP0UO6JPJy2yWeMC6nIqrnKjOB1/2eD2prUwA4fAk="
+    ipdata=request.POST
+    print(ipdata)
+    # hased_data=make_password(ipdata.get("ip"))
+    x=check_password(ipdata.get("ip"),hased_data)
+    print(x)
+    # print(hased_data)
+    return JsonResponse({"status":"success","data":x},status=200)
