@@ -54,7 +54,8 @@ MIDDLEWARE = [
     'basic.middleware.sscMiddleware',
     'basic.middleware.UsernameMiddleware',
     'basic.middleware.EmailMiddleware',
-    'basic.middleware.PasswordMiddleware'
+    'basic.middleware.PasswordMiddleware',
+    'basic.middleware.authenticate_middleware'
 ]
 
 ROOT_URLCONF = 'projectk.urls'

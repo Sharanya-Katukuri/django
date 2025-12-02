@@ -185,7 +185,7 @@ def login(request):
         try:
             user=Users.objects.get(username=username)
             issed_time=datetime.now(ZoneInfo("Asia/Kolkata"))
-            expired_time=issed_time+timedelta(minutes=1)
+            expired_time=issed_time+timedelta(minutes=30)
             if check_password(password,user.password):
                 # token="a json web token"
                 # creating jwt token
@@ -219,3 +219,19 @@ def check(request):
     print(x)
     # print(hased_data)
     return JsonResponse({"status":"success","data":x},status=200)
+
+
+# build an api to get all records from user table
+
+def getAllUsers(request):
+    if request.method=="GET":
+        users=list(Users.objects.values())
+        print(request.token_data,"token data in view")
+        print(request.token_data.get("username"),"user from token")
+        # print("user list:",users)
+        for user in users:
+            # print("username from user list:",user["username"])
+            if user["username"]==request.token_data.get("username"):
+                return JsonResponse({"status":"success","loggedin_user":request.token_data,"data":users},status=200)
+        else:
+            return JsonResponse({"error":"unauthorized access"},status=401)
