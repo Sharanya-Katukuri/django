@@ -185,13 +185,13 @@ def login(request):
         try:
             user=Users.objects.get(username=username)
             issed_time=datetime.now(ZoneInfo("Asia/Kolkata"))
-            expired_time=issed_time+timedelta(minutes=30)
+            expired_time=issed_time+timedelta(minutes=1)
             if check_password(password,user.password):
                 # token="a json web token"
                 # creating jwt token
                 payload={"username":username,"email":user.email,"id":user.id,"exp":expired_time}
-                token=jwt.encode(payload,settings.SECRET_KEY,algorithm="HS256",exp=expired_time)
-                return JsonResponse ({"status":'successfully loggedin',"token":token,"issed_at":issed_time},status=200)
+                token=jwt.encode(payload,settings.SECRET_KEY,algorithm="HS256")
+                return JsonResponse ({"status":'successfully loggedin',"token":token,"issed_at":issed_time,"expired_at":expired_time,"expired_in":int((expired_time-issed_time).total_seconds()/60)},status=200)
             else:
                 return JsonResponse({"status":"failure","message":"invalid password"},status=400)
         except Users.DoesNotExist:
