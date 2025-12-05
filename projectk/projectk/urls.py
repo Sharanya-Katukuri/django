@@ -20,7 +20,7 @@ from basic.views import sample
 from basic.views import sample1
 from basic.views import sampleInfo
 from basic.views import dynamicresponse
-from basic.views import health,addStudent,add_post,job1,job2,signUp,check,login,change_password,getAllUsers
+from basic.views import health,addStudent,add_post,job1,job2,signUp,check,login,change_password,getAllUsers,home,aboutus,welcome,contactus,services,projects
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,4 +38,10 @@ urlpatterns = [
     path('login/',login),
     path('changepassword/',change_password),
     path('users/',getAllUsers),
+    path('home/',home,name='home'),
+    path('about/',aboutus,name='about'),
+    path('welcomes/',welcome,name='welcome'),
+    path('contact/',contactus,name='contact'),
+    path('services/',services,name='services'),
+    path('projects/',projects,name='projects'),
 ]
