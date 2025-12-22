@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
+from basic.models import Student
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -54,3 +56,16 @@ def productById(request,id):
         if product["product_id"]==id:
             return JsonResponse(product)
     return JsonResponse({"error":"product not found"})
+
+
+def productByCategory(request,ctg):
+    for product in ecommerce_data:
+        if product["category"].lower()==ctg.lower():
+            return JsonResponse(product)
+    return JsonResponse({"error":"product not found"})
+
+def StudentById(request,id):
+    student=get_object_or_404(Student,id=id)
+    student_details={"id":student.id,"name":student.name}
+    print(student.name)
+    return JsonResponse({"status":"success","data":student_details})
