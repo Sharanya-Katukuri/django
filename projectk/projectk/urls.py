@@ -22,7 +22,7 @@ from basic.views import sampleInfo
 from basic.views import dynamicresponse
 from basic.views import health,addStudent,add_post,job1,job2,signUp,check,login,change_password,getAllUsers,home,aboutus,welcome,contactus,services,projects
 from basic2.views import Demo,productById,productByCategory,StudentById
-from cbv.views import DemoClass,PaymentInfo
+from cbv.views import DemoClass,PaymentInfo,Mixin1,Mixin2,Products,getProductBycategory
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,8 +54,12 @@ urlpatterns = [
     path('product/category/<str:ctg>',productByCategory),
     path('student/<int:id>',StudentById),
 
-    # cbvapp urls
+    # cbv_app urls
     path('cbv/',DemoClass.as_view()),
     path('pay/',PaymentInfo.as_view()),
+    path('mixin1/',Mixin1.as_view()),
+    path('mixin2/',Mixin2.as_view()),
+    path('mixin3/',Products.as_view()),
+    path('productbyctg/<str:ctg>',getProductBycategory.as_view())
 
 ]
